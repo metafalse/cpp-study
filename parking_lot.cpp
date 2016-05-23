@@ -108,7 +108,6 @@ void Parking::Display()
     while (curr->value != 0)
     {
         cout << curr->value << "\t";
-        //cout << "\nc-link: " << c->link << "\n  ";
         curr = curr->link;
     }
     cout << "\n";
@@ -125,13 +124,9 @@ void Parking::Park()
     ticketNo++;
     vacancy--;
     Space *fresh = new Space;
-    //cout << "Ticket no. = " << ticketNo << "\n";
     fresh->value = ticketNo;
-    //cout << "fresh->value = " << fresh->value << "\n";
     fresh->link = a.top;
-    //cout << "fresh->link = " << fresh->link << "\n";
     a.top = fresh;
-    //cout << "fresh->link = " << fresh->link << "\n";
 }
 
 void Parking::Retrieve()
@@ -163,8 +158,6 @@ void Parking::Retrieve()
         {
             MoveBetweenStacks(a, b);
             a.Shift();
-            //cout << "top->value" << top->value << "\n";
-            //cout << "b.top->value" << b.top->value << "\n";
         }
     }
     
