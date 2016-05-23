@@ -15,6 +15,24 @@ enum Input {
 
 #define STACK_SIZE 5
 
+class Space {
+    
+    private:
+    public:
+        Space();
+        int value;
+        Space *link;
+};
+
+class Stack {
+    
+    private:
+    public:
+        Stack();
+        Space *head;
+        Space *tail;
+};
+
 class Parking {
     
     private:
@@ -22,32 +40,41 @@ class Parking {
         int vacancy;
     public:
         Parking();
-        void Sub();
+        void Exec();
         void Display();
         void Park();
         void Retrieve();
-        void Quit();
-        int value;
-        Parking *b;
-        Parking *link;
-        Parking *head;
-        Parking *tail;
+        Stack *a;
+        Stack *b;
 };
 
 int main()
 {
     Parking p;
-    p.Sub();
+    p.Exec();
 }
 
-void Parking::Sub()
+Space::Space()
 {
-    Parking *p;
-    tail = new Parking;
-    tail->value = 0;
-    b = new Parking;
-    b->tail = new Parking;
-    b->tail->value = 0;
+    value = 0;
+}
+
+Stack::Stack()
+{
+    tail = new Space;
+}
+
+Parking::Parking()
+{
+    currNo = 0;
+    vacancy = STACK_SIZE;
+}
+
+void Parking::Exec()
+{
+    a = new Stack;
+    b = new Stack;
+    
     char input;
     do {
         cout << "D) isplay\tP) ark\tR) etrieve\tQ) uit: ";
@@ -58,6 +85,7 @@ void Parking::Sub()
             cin.ignore(numeric_limits<streamsize>::max(),'\n');
             exit(0);
         }
+        
         if (input == DISPLAY_LOWER || input == DISPLAY_UPPER)
         {
             Display();
@@ -73,22 +101,16 @@ void Parking::Sub()
     } while (input != QUIT_LOWER && input != QUIT_UPPER);
 }
 
-Parking::Parking()
-{
-    currNo = 0;
-    vacancy = STACK_SIZE;
-}
-
 void Parking::Display()
 {
-    if (!tail->value)
+    if (!a->tail->value)
     {
         cout << "CAR NOT PARKED IN MY LOT" << "\n";
         return;
     }
     cout << "Alley A:";
-    Parking *c;
-    c = tail;
+    Space *c;
+    c = a->tail;
     while (c->value != 0)
     {
         cout << c->value << "\t";
@@ -107,13 +129,13 @@ void Parking::Park()
     }
     currNo++;
     vacancy--;
-    head = new Parking;
+    a->head = new Space;
     //cout << "Ticket no. = " << currNo << "\n";
-    head->value = currNo;
+    a->head->value = currNo;
     //cout << "head->value = " << head->value << "\n";
-    head->link = tail;
+    a->head->link = a->tail;
     //cout << "head->link = " << head->link << "\n";
-    tail = head;
+    a->tail = a->head;
     //cout << "head->link = " << head->link << "\n";
 }
 
@@ -122,44 +144,45 @@ void Parking::Retrieve()
     cout << "Ticket no. : ";
     int retrieveNo;
     cin >> dec >> retrieveNo;
+    
     while (1)
     {
-        if (tail->value == retrieveNo)
+        if (a->tail->value == retrieveNo)
         {
-            cout << "hit: " << tail->value << "\n";
-            Parking *c;
-            c = tail;
-            tail = tail->link;
+            Space *c;
+            c = a->tail;
+            a->tail = a->tail->link;
             delete c;
             vacancy++;
             break;
         }
-        else if (tail->value == 0)
+        else if (a->tail->value == 0)
         {
             cout << "CAR NOT PARKED IN MY LOT" << "\n";
             break;            
         }
         else
         {
-            b->head = new Parking;
-            b->head->value = tail->value;
+            b->head = new Space;
+            b->head->value = a->tail->value;
             b->head->link = b->tail;
             b->tail = b->head;
-            Parking *c;
-            c = tail;
-            tail = tail->link;
+            Space *c;
+            c = a->tail;
+            a->tail = a->tail->link;
             delete c;
             //cout << "tail->value" << tail->value << "\n";
             //cout << "b->tail->value" << b->tail->value << "\n";
         }
     }
+    
     while (b->tail->value != 0)
     {
-        head = new Parking;
-        head->value = b->tail->value;
-        head->link = tail;
-        tail = head;
-        Parking *c;
+        a->head = new Space;
+        a->head->value = b->tail->value;
+        a->head->link = a->tail;
+        a->tail = a->head;
+        Space *c;
         c = b->tail;
         b->tail = b->tail->link;
         delete c;
@@ -167,9 +190,4 @@ void Parking::Retrieve()
         //cout << "tail->value" << tail->value << "\n";
         //cout << "b->tail->value" << b->tail->value << "\n";
     }
-}
-
-void Parking::Quit()
-{
-    
 }
