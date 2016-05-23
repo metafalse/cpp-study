@@ -16,8 +16,6 @@ enum Input {
 #define STACK_SIZE 5
 
 class Space {
-    
-    private:
     public:
         Space();
         int value;
@@ -25,19 +23,17 @@ class Space {
 };
 
 class Stack {
-    
-    private:
     public:
         Stack();
-        Space *head;
-        Space *tail;
+        void Shift();
+        Space *top;
 };
 
 class Parking {
-    
     private:
-        int currNo;
+        int ticketNo;
         int vacancy;
+        void MoveBetweenStacks(Stack &, Stack &);
     public:
         Parking();
         void Exec();
@@ -61,12 +57,12 @@ Space::Space()
 
 Stack::Stack()
 {
-    tail = new Space;
+    top = new Space;
 }
 
 Parking::Parking()
 {
-    currNo = 0;
+    ticketNo = 0;
     vacancy = STACK_SIZE;
 }
 
@@ -100,19 +96,20 @@ void Parking::Exec()
 
 void Parking::Display()
 {
-    if (!a.tail->value)
+    if (a.top->value == 0)
     {
-        cout << "CAR NOT PARKED IN MY LOT" << "\n";
+        cout << "CAR NOT PARKED IN MY LOT\n";
         return;
     }
+    
     cout << "Alley A:";
-    Space *c;
-    c = a.tail;
-    while (c->value != 0)
+    Space *curr;
+    curr = a.top;
+    while (curr->value != 0)
     {
-        cout << c->value << "\t";
+        cout << curr->value << "\t";
         //cout << "\nc-link: " << c->link << "\n  ";
-        c = c->link;
+        curr = curr->link;
     }
     cout << "\n";
 }
@@ -124,67 +121,72 @@ void Parking::Park()
         cout << "My Lot is Full\n";
         return;
     }
-    currNo++;
+    
+    ticketNo++;
     vacancy--;
-    a.head = new Space;
-    //cout << "Ticket no. = " << currNo << "\n";
-    a.head->value = currNo;
-    //cout << "head->value = " << head->value << "\n";
-    a.head->link = a.tail;
-    //cout << "head->link = " << head->link << "\n";
-    a.tail = a.head;
-    //cout << "head->link = " << head->link << "\n";
+    Space *fresh = new Space;
+    //cout << "Ticket no. = " << ticketNo << "\n";
+    fresh->value = ticketNo;
+    //cout << "fresh->value = " << fresh->value << "\n";
+    fresh->link = a.top;
+    //cout << "fresh->link = " << fresh->link << "\n";
+    a.top = fresh;
+    //cout << "fresh->link = " << fresh->link << "\n";
 }
 
 void Parking::Retrieve()
 {
+    if (vacancy == STACK_SIZE)
+    {
+        cout << "Lot is Empty, No cars to Retrieve\n";
+        return;
+    }
+    
     cout << "Ticket no. : ";
     int retrieveNo;
     cin >> dec >> retrieveNo;
     
     while (1)
     {
-        if (a.tail->value == retrieveNo)
+        if (a.top->value == 0)
         {
-            Space *c;
-            c = a.tail;
-            a.tail = a.tail->link;
-            delete c;
+            cout << "CAR NOT PARKED IN MY LOT\n";
+            break;            
+        }
+        else if (a.top->value == retrieveNo)
+        {
+            a.Shift();
             vacancy++;
             break;
         }
-        else if (a.tail->value == 0)
-        {
-            cout << "CAR NOT PARKED IN MY LOT" << "\n";
-            break;            
-        }
         else
         {
-            b.head = new Space;
-            b.head->value = a.tail->value;
-            b.head->link = b.tail;
-            b.tail = b.head;
-            Space *c;
-            c = a.tail;
-            a.tail = a.tail->link;
-            delete c;
-            //cout << "tail->value" << tail->value << "\n";
-            //cout << "b.tail->value" << b.tail->value << "\n";
+            MoveBetweenStacks(a, b);
+            a.Shift();
+            //cout << "top->value" << top->value << "\n";
+            //cout << "b.top->value" << b.top->value << "\n";
         }
     }
     
-    while (b.tail->value != 0)
+    while (b.top->value != 0)
     {
-        a.head = new Space;
-        a.head->value = b.tail->value;
-        a.head->link = a.tail;
-        a.tail = a.head;
-        Space *c;
-        c = b.tail;
-        b.tail = b.tail->link;
-        delete c;
-        //cout << "tail->link" << tail->link << "\n";
-        //cout << "tail->value" << tail->value << "\n";
-        //cout << "b.tail->value" << b.tail->value << "\n";
+        MoveBetweenStacks(b, a);
+        b.Shift();
     }
+}
+
+void Parking::MoveBetweenStacks(Stack& from, Stack& to)
+{
+    Space *fresh = new Space;
+    fresh->value = from.top->value;
+    fresh->link = to.top;
+    to.top = fresh;
+}
+
+void Stack::Shift()
+{
+    Space *trash;
+    trash = top;
+    top = top->link;
+    delete trash;
 }
