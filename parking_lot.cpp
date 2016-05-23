@@ -44,8 +44,8 @@ class Parking {
         void Display();
         void Park();
         void Retrieve();
-        Stack *a;
-        Stack *b;
+        Stack a;
+        Stack b;
 };
 
 int main()
@@ -71,10 +71,7 @@ Parking::Parking()
 }
 
 void Parking::Exec()
-{
-    a = new Stack;
-    b = new Stack;
-    
+{    
     char input;
     do {
         cout << "D) isplay\tP) ark\tR) etrieve\tQ) uit: ";
@@ -103,14 +100,14 @@ void Parking::Exec()
 
 void Parking::Display()
 {
-    if (!a->tail->value)
+    if (!a.tail->value)
     {
         cout << "CAR NOT PARKED IN MY LOT" << "\n";
         return;
     }
     cout << "Alley A:";
     Space *c;
-    c = a->tail;
+    c = a.tail;
     while (c->value != 0)
     {
         cout << c->value << "\t";
@@ -129,13 +126,13 @@ void Parking::Park()
     }
     currNo++;
     vacancy--;
-    a->head = new Space;
+    a.head = new Space;
     //cout << "Ticket no. = " << currNo << "\n";
-    a->head->value = currNo;
+    a.head->value = currNo;
     //cout << "head->value = " << head->value << "\n";
-    a->head->link = a->tail;
+    a.head->link = a.tail;
     //cout << "head->link = " << head->link << "\n";
-    a->tail = a->head;
+    a.tail = a.head;
     //cout << "head->link = " << head->link << "\n";
 }
 
@@ -147,47 +144,47 @@ void Parking::Retrieve()
     
     while (1)
     {
-        if (a->tail->value == retrieveNo)
+        if (a.tail->value == retrieveNo)
         {
             Space *c;
-            c = a->tail;
-            a->tail = a->tail->link;
+            c = a.tail;
+            a.tail = a.tail->link;
             delete c;
             vacancy++;
             break;
         }
-        else if (a->tail->value == 0)
+        else if (a.tail->value == 0)
         {
             cout << "CAR NOT PARKED IN MY LOT" << "\n";
             break;            
         }
         else
         {
-            b->head = new Space;
-            b->head->value = a->tail->value;
-            b->head->link = b->tail;
-            b->tail = b->head;
+            b.head = new Space;
+            b.head->value = a.tail->value;
+            b.head->link = b.tail;
+            b.tail = b.head;
             Space *c;
-            c = a->tail;
-            a->tail = a->tail->link;
+            c = a.tail;
+            a.tail = a.tail->link;
             delete c;
             //cout << "tail->value" << tail->value << "\n";
-            //cout << "b->tail->value" << b->tail->value << "\n";
+            //cout << "b.tail->value" << b.tail->value << "\n";
         }
     }
     
-    while (b->tail->value != 0)
+    while (b.tail->value != 0)
     {
-        a->head = new Space;
-        a->head->value = b->tail->value;
-        a->head->link = a->tail;
-        a->tail = a->head;
+        a.head = new Space;
+        a.head->value = b.tail->value;
+        a.head->link = a.tail;
+        a.tail = a.head;
         Space *c;
-        c = b->tail;
-        b->tail = b->tail->link;
+        c = b.tail;
+        b.tail = b.tail->link;
         delete c;
         //cout << "tail->link" << tail->link << "\n";
         //cout << "tail->value" << tail->value << "\n";
-        //cout << "b->tail->value" << b->tail->value << "\n";
+        //cout << "b.tail->value" << b.tail->value << "\n";
     }
 }
