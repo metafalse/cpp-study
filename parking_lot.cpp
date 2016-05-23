@@ -1,5 +1,6 @@
 /* author: Rei Iwatsuki */
-/* Apple LLVM version 7.0.0 (clang-700.1.76) */
+/* compiler: Apple LLVM version 7.0.0 (clang-700.1.76) */
+/* os: Mac OS X 10.10.5 */
 
 #include <iostream>
 #include <iomanip>
