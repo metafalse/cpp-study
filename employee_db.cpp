@@ -10,7 +10,7 @@
 using namespace std;
 
 enum Mode { NAME, AGE, SALARY };
-enum Menu { ADD = '1', DELETE = '2', SEARCH = '3', LIST = '4', SAVE = '5', EXIT = '6' };
+enum Menu { ADD = 1, DELETE = 2, SEARCH = 3, LIST = 4, SAVE = 5, EXIT = 6 };
 enum YesNo { YES_UPPER = 'Y', YES_LOWER = 'y', NO_UPPER = 'N', NO_LOWER = 'n' };
 
 class Employee {
@@ -18,8 +18,8 @@ class Employee {
     public:
         Employee();
         char name[20];
-        char age[4];
-        char salary[8];
+        char age[3];
+        char salary[6];
         Employee *link;
 };
 
@@ -47,7 +47,56 @@ Database::Database()
 
 void Database::Add()
 {
-    cout << "Add!!" << endl;
+    Employee temp;
+    char firstName[10];
+    cout << "Enter Employee First Name: ";
+    cin >> firstName;
+    char lastName[10];
+    cout << "Enter Employee Last Name: ";
+    cin >> lastName;
+    strcpy(temp.name, strcat(strcat(firstName, " "), lastName));
+    char age[3];
+    cout << "Enter Employee Age: ";
+    cin >> temp.age;
+    char salary[6];
+    cout << "Enter Employee Salary: ";
+    cin >> temp.salary;
+    //cout << temp.name << ';' << temp.age << ';' << temp.salary << endl;
+    Employee *curr = top;
+    Employee *emp = new Employee[16];
+    int empno = 0;
+    while (1) {
+        emp[empno] = *curr;
+        empno++;
+        if (curr->link != 0) {
+            curr = curr->link;
+        } else {
+            emp[empno] = temp;
+            break;
+        }       
+    }
+    // Bubble Sort
+    int count = empno;
+    while (count > 0) {
+        for (int i = 0; i < count; i++) {
+            if (strcmp(emp[i].name, emp[i+1].name) > 0)
+            {
+                Employee temp = emp[i+1];
+                emp[i+1] = emp[i];
+                emp[i] = temp;
+            }
+        }
+        count--;
+    }
+
+    for (int i = 0; i <= empno-1; i++) {
+        emp[i].link = &emp[i+1];
+    }
+    top = &emp[0];
+
+    //for (int i = 0; i < 13; i++) {
+    //    cout << i << '|' << emp[i].name << '|' << emp[i].age << '|' << emp[i].salary << endl;
+    //}
 }
 
 void Database::Delete()
@@ -76,7 +125,15 @@ void Database::Delete()
 
 void Database::Search()
 {
-    cout << "Search!!" << endl;
+    string query;
+    //char queryBuf[20];
+    //memset(queryBuf, '\0', 20);
+    //char *pQuery = queryBuf;
+    cout << "Enter Employee Name: ";
+    cin >> query;
+    //getline(cin, query);
+    //cin.getline(pQuery, 20);
+    cout << "You Entered " << query << endl;
 }
 
 void Database::List()
@@ -227,7 +284,7 @@ int main()
     Database db;
     db.top = &emp[0];
     
-    char input;
+    int input;
     while (1) {
         cout << "1. Add Employee" << endl;
         cout << "2. Delete Employee" << endl;
