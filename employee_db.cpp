@@ -10,8 +10,8 @@
 using namespace std;
 
 enum Mode { NAME, AGE, SALARY };
-
-enum Input { ADD = '1', DELETE = '2', SEARCH = '3', LIST = '4', SAVE = '5', EXIT = '6' };
+enum Menu { ADD = '1', DELETE = '2', SEARCH = '3', LIST = '4', SAVE = '5', EXIT = '6' };
+enum YesNo { YES_UPPER = 'Y', YES_LOWER = 'y', NO_UPPER = 'N', NO_LOWER = 'n' };
 
 class Employee {
     private:
@@ -52,7 +52,26 @@ void Database::Add()
 
 void Database::Delete()
 {
-    cout << "Delete!!" << endl;
+    char input;
+    cout << "Enter Employee No or C) ancel: ";
+    cin >> input;
+    if (input == 'C' || input == 'c') return;
+
+    Employee *curr = top;
+    int no = 1;
+    while (1) {
+        if (atoi(&input) - 1 == no && curr->link->link != 0) {
+            curr->link = curr->link->link;
+            break;
+        }
+        no++;
+        if (curr->link != 0) {
+            curr = curr->link;
+        } else {
+            cout << "Employee No Not Found" << endl;
+            break;
+        }       
+    }
 }
 
 void Database::Search()
@@ -119,7 +138,19 @@ int Database::Save()
 
 void Database::Exit()
 {
-    cout << "Exit!!" << endl;
+    char input;
+    while (1) {
+        cout << "Do you want to save into a file? (y/n): " << endl;
+        cin >> input;
+
+        if (input == YES_UPPER || input == YES_LOWER) {
+            Save();
+        } else if (input != NO_UPPER && input != NO_LOWER) {
+            cout << "Please enter the appropriate character" << endl;
+            continue;
+        }
+        exit(0);
+    }
 }
 
 //int main(int argc, char *argv[])
@@ -197,27 +228,29 @@ int main()
     db.top = &emp[0];
     
     char input;
-    cout << "1. Add Employee" << endl;
-    cout << "2. Delete Employee" << endl;
-    cout << "3. Search Employee" << endl;
-    cout << "4. List All Employees" << endl;
-    cout << "5. Save Employee Database" << endl;
-    cout << "6. Exit Employee Database" << endl;
-    cout << "Enter Your Choice:" << endl;
-    cin >> input;
-
-    if (input == ADD) {
-        db.Add();
-    } else if (input == DELETE) {
-        db.Delete();
-    } else if (input == SEARCH) {
-        db.Search();
-    } else if (input == LIST) {
-        db.List();
-    } else if (input == SAVE) {
-        db.Save();
-    } else if (input == EXIT) {
-        db.Exit();
+    while (1) {
+        cout << "1. Add Employee" << endl;
+        cout << "2. Delete Employee" << endl;
+        cout << "3. Search Employee" << endl;
+        cout << "4. List All Employees" << endl;
+        cout << "5. Save Employee Database" << endl;
+        cout << "6. Exit Employee Database" << endl;
+        cout << "Enter Your Choice: ";
+        cin >> input;
+        
+        if (input == ADD) {
+            db.Add();
+        } else if (input == DELETE) {
+            db.Delete();
+        } else if (input == SEARCH) {
+            db.Search();
+        } else if (input == LIST) {
+            db.List();
+        } else if (input == SAVE) {
+            db.Save();
+        } else if (input == EXIT) {
+            db.Exit();
+        }
     }
 
     return 0;
