@@ -35,6 +35,8 @@ class Database {
         void Exit();
         void Header();
         void Line(Employee *, int);
+        void Sort(Employee[], int count);
+        
         Employee *top;
 };
 
@@ -45,6 +47,22 @@ Employee::Employee()
 
 Database::Database()
 {
+}
+
+void Database::Sort(Employee emp[], int count)
+{
+    // Bubble Sort
+    while (count > 0) {
+        for (int i = 0; i < count; i++) {
+            if (strcmp(emp[i].name, emp[i+1].name) > 0)
+            {
+                Employee temp = emp[i+1];
+                emp[i+1] = emp[i];
+                emp[i] = temp;
+            }
+        }
+        count--;
+    }
 }
 
 void Database::Add()
@@ -77,24 +95,15 @@ void Database::Add()
             break;
         }       
     }
-    // Bubble Sort
-    int count = empno;
-    while (count > 0) {
-        for (int i = 0; i < count; i++) {
-            if (strcmp(emp[i].name, emp[i+1].name) > 0)
-            {
-                Employee temp = emp[i+1];
-                emp[i+1] = emp[i];
-                emp[i] = temp;
-            }
-        }
-        count--;
-    }
+
+    Sort(emp, empno);
 
     for (int i = 0; i <= empno-1; i++) {
         emp[i].link = &emp[i+1];
     }
     top = &emp[0];
+
+    cout << endl;
 }
 
 void Database::Delete()
@@ -285,8 +294,11 @@ int main()
 
     InFile.close();
 
+    Database db;
+
+    db.Sort(emp, empno);
     // Bubble Sort
-    int count = empno;
+    /*int count = empno;
     while (count > 0) {
         for (int i = 0; i < count; i++) {
             if (strcmp(emp[i].name, emp[i+1].name) > 0)
@@ -297,13 +309,12 @@ int main()
             }
         }
         count--;
-    }
+    }*/
 
     for (int i = 0; i <= empno-1; i++) {
         emp[i].link = &emp[i+1];
     }
 
-    Database db;
     db.top = &emp[0];
     
     int input;
