@@ -297,19 +297,6 @@ int main()
     Database db;
 
     db.Sort(emp, empno);
-    // Bubble Sort
-    /*int count = empno;
-    while (count > 0) {
-        for (int i = 0; i < count; i++) {
-            if (strcmp(emp[i].name, emp[i+1].name) > 0)
-            {
-                Employee temp = emp[i+1];
-                emp[i+1] = emp[i];
-                emp[i] = temp;
-            }
-        }
-        count--;
-    }*/
 
     for (int i = 0; i <= empno-1; i++) {
         emp[i].link = &emp[i+1];
