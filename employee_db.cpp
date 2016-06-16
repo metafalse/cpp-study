@@ -61,7 +61,7 @@ void Database::Add()
     char salary[6];
     cout << "Enter Employee Salary: ";
     cin >> temp.salary;
-    //cout << temp.name << ';' << temp.age << ';' << temp.salary << endl;
+
     Employee *curr = top;
     Employee *emp = new Employee[16];
     int empno = 0;
@@ -93,10 +93,6 @@ void Database::Add()
         emp[i].link = &emp[i+1];
     }
     top = &emp[0];
-
-    //for (int i = 0; i < 13; i++) {
-    //    cout << i << '|' << emp[i].name << '|' << emp[i].age << '|' << emp[i].salary << endl;
-    //}
 }
 
 void Database::Delete()
@@ -125,15 +121,41 @@ void Database::Delete()
 
 void Database::Search()
 {
-    string query;
-    //char queryBuf[20];
-    //memset(queryBuf, '\0', 20);
-    //char *pQuery = queryBuf;
-    cout << "Enter Employee Name: ";
+    char query[10];
+    cout << "Enter Employee First Name or Last Name: ";
     cin >> query;
-    //getline(cin, query);
-    //cin.getline(pQuery, 20);
-    cout << "You Entered " << query << endl;
+
+    cout << "# Employee Name          Age         Salary" << endl;
+    cout << "=============================================" << endl; 
+    Employee *curr = top;
+    int no = 1;
+    while (1) {
+        if (strstr(curr->name, query)) {
+            cout << no << ". ";
+            if (no < 10) {
+                cout << setfill(' ') << setw(22) << left << curr->name;
+            } else {
+                cout << setfill(' ') << setw(21) << left << curr->name;            
+            }
+            cout << setfill(' ') << setw(11) << left << curr->age << ' ';
+            int digits = sizeof(curr->salary);
+            for (int i = sizeof(curr->salary) - 1; !isdigit(curr->salary[i]); i--) {
+                digits--;
+            }
+            for (int i = 0; i < digits; i++) {
+                if (i != 0 && (digits - i) % 3 == 0) cout << ',';
+                cout << curr->salary[i];
+            }
+            cout << endl;
+        }
+        no++;
+        if (curr->link != 0) {
+            curr = curr->link;
+        } else {
+            break;
+        }       
+    }
+    cout << endl;
 }
 
 void Database::List()
@@ -166,6 +188,7 @@ void Database::List()
             break;
         }
     }
+    cout << endl;
 }
 
 int Database::Save()
@@ -225,7 +248,7 @@ int main()
         return 1;
     }
 
-    Employee emp[16];
+    Employee *emp = new Employee[16];
     char tmpc;
     Mode mode = NAME;
 
