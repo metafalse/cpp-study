@@ -33,6 +33,8 @@ class Database {
         void List();
         int Save();
         void Exit();
+        void Header();
+        void Line(Employee *, int);
         Employee *top;
 };
 
@@ -119,34 +121,46 @@ void Database::Delete()
     }
 }
 
+void Database::Header()
+{
+    cout << "# Employee Name          Age         Salary" << endl;
+    cout << "=============================================" << endl;    
+}
+
+void Database::Line(Employee *curr, int no)
+{
+    cout << no << ". ";
+    if (no < 10) {
+        cout << setfill(' ') << setw(22) << left << curr->name;
+    } else {
+        cout << setfill(' ') << setw(21) << left << curr->name;            
+    }
+    cout << setfill(' ') << setw(11) << left << curr->age << ' ';
+    int digits = sizeof(curr->salary);
+    for (int i = sizeof(curr->salary) - 1; !isdigit(curr->salary[i]); i--) {
+        digits--;
+    }
+    for (int i = 0; i < digits; i++) {
+        if (i != 0 && (digits - i) % 3 == 0) cout << ',';
+        cout << curr->salary[i];
+    }
+    cout << endl;
+}
+
 void Database::Search()
 {
     char query[10];
     cout << "Enter Employee First Name or Last Name: ";
     cin >> query;
 
-    cout << "# Employee Name          Age         Salary" << endl;
-    cout << "=============================================" << endl; 
+    Header();
     Employee *curr = top;
     int no = 1;
+    bool noResult = true;
     while (1) {
         if (strstr(curr->name, query)) {
-            cout << no << ". ";
-            if (no < 10) {
-                cout << setfill(' ') << setw(22) << left << curr->name;
-            } else {
-                cout << setfill(' ') << setw(21) << left << curr->name;            
-            }
-            cout << setfill(' ') << setw(11) << left << curr->age << ' ';
-            int digits = sizeof(curr->salary);
-            for (int i = sizeof(curr->salary) - 1; !isdigit(curr->salary[i]); i--) {
-                digits--;
-            }
-            for (int i = 0; i < digits; i++) {
-                if (i != 0 && (digits - i) % 3 == 0) cout << ',';
-                cout << curr->salary[i];
-            }
-            cout << endl;
+            Line(curr, no);
+            noResult = false;
         }
         no++;
         if (curr->link != 0) {
@@ -155,32 +169,17 @@ void Database::Search()
             break;
         }       
     }
+    if (noResult) cout << "No Result" << endl;
     cout << endl;
 }
 
 void Database::List()
 {
-    cout << "# Employee Name          Age         Salary" << endl;
-    cout << "=============================================" << endl;
+    Header();
     Employee *curr = top;
     int no = 1;
     while (1) {
-        cout << no << ". ";
-        if (no < 10) {
-            cout << setfill(' ') << setw(22) << left << curr->name;
-        } else {
-            cout << setfill(' ') << setw(21) << left << curr->name;            
-        }
-        cout << setfill(' ') << setw(11) << left << curr->age << ' ';
-        int digits = sizeof(curr->salary);
-        for (int i = sizeof(curr->salary) - 1; !isdigit(curr->salary[i]); i--) {
-            digits--;
-        }
-        for (int i = 0; i < digits; i++) {
-            if (i != 0 && (digits - i) % 3 == 0) cout << ',';
-            cout << curr->salary[i];
-        }
-        cout << endl;
+        Line(curr, no);
         no++;
         if (curr->link != 0) {
             curr = curr->link;
