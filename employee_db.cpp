@@ -31,7 +31,7 @@ class Database {
         void Delete();
         void Search();
         void List();
-        void Save();
+        int Save();
         void Exit();
         Employee *top;
 };
@@ -92,9 +92,29 @@ void Database::List()
     }
 }
 
-void Database::Save()
+int Database::Save()
 {
-    cout << "Save!!" << endl;
+    ofstream OutFile("output.txt");
+
+    if (!OutFile) {
+        cout << "Cannot open output file.\n";
+        return 1;
+    }
+
+    Employee *curr = top;
+    while (1) {
+        OutFile << curr->name << ';' << curr->age << ';' << curr->salary;
+        if (curr->link != 0) {
+            OutFile << endl;
+            curr = curr->link;
+        } else {
+            break;
+        }       
+    }
+
+    OutFile.close();
+
+    return 0;
 }
 
 void Database::Exit()
