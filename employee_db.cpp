@@ -134,6 +134,8 @@ int main(int argc, char *argv[])
         } else if (input == EXIT) {
             db.Exit();
         } else {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(),'\n');            
             cout << "Enter appropriate number." << endl << endl;
         }
     }
@@ -205,9 +207,19 @@ void Database::Delete()
 
 void Database::Search()
 {
-    char query[10];
-    cout << "Enter Employee First Name or Last Name: ";
-    cin >> query;
+    char query[11];
+    while (1) {
+        cout << "Enter Employee First Name or Last Name: ";
+        cin >> setw(11) >> query;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(),'\n');
+        if (cin.eof() || !cin.good()) // Check if input is invalid
+        {
+            cout << "Enter up to 10 charcters." << endl << endl;
+            continue;
+        }
+        break;
+    }
 
     Header();
     Employee *curr = top;
