@@ -16,7 +16,7 @@ enum YesNo { YES_UPPER = 'Y', YES_LOWER = 'y', NO_UPPER = 'N', NO_LOWER = 'n' };
 class Employee {
     public:
         Employee();
-        char name[20];
+        char name[21];
         char age[3];
         char salary[6];
         Employee *link;
@@ -113,10 +113,10 @@ int main(int argc, char *argv[])
         cout << "6. Exit Employee Database" << endl;
         cout << "Enter Your Choice: ";
         cin >> input;
+        cin.ignore(numeric_limits<streamsize>::max(),'\n');
         if (cin.eof() || !cin.good()) // Check if input is invalid
         {
             cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(),'\n');
             cout << "Enter appropriate number." << endl << endl;
             continue;
         }
@@ -134,8 +134,6 @@ int main(int argc, char *argv[])
         } else if (input == EXIT) {
             db.Exit();
         } else {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(),'\n');            
             cout << "Enter appropriate number." << endl << endl;
         }
     }
@@ -146,19 +144,23 @@ int main(int argc, char *argv[])
 void Database::Add()
 {
     Employee temp;
-    char firstName[10];
+    char firstName[11];
     cout << "Enter Employee First Name: ";
-    cin >> firstName;
-    char lastName[10];
+    cin >> setw(11) >> firstName;
+    cin.ignore(numeric_limits<streamsize>::max(),'\n');            
+    char lastName[11];
     cout << "Enter Employee Last Name: ";
-    cin >> lastName;
+    cin >> setw(11) >> lastName;
+    cin.ignore(numeric_limits<streamsize>::max(),'\n');            
     strcpy(temp.name, strcat(strcat(firstName, " "), lastName));
     char age[3];
     cout << "Enter Employee Age: ";
-    cin >> temp.age;
-    char salary[6];
+    cin >> setw(3) >> temp.age;
+    cin.ignore(numeric_limits<streamsize>::max(),'\n');            
+    char salary[7];
     cout << "Enter Employee Salary: ";
-    cin >> temp.salary;
+    cin >> setw(7) >> temp.salary;
+    cin.ignore(numeric_limits<streamsize>::max(),'\n');            
 
     Employee *emp = new Employee[16];
     Employee *curr = top;
@@ -182,7 +184,8 @@ void Database::Delete()
 {
     uint input;
     cout << "Enter Employee No: ";
-    cin >> input;
+    cin >> dec >> input;
+    cin.ignore(numeric_limits<streamsize>::max(),'\n');
 
     Employee *curr = top;
     int no = 1;
@@ -211,7 +214,6 @@ void Database::Search()
     while (1) {
         cout << "Enter Employee First Name or Last Name: ";
         cin >> setw(11) >> query;
-        cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(),'\n');
         if (cin.eof() || !cin.good()) // Check if input is invalid
         {
@@ -281,6 +283,7 @@ void Database::Exit()
     while (1) {
         cout << "Do you want to save into a file? (y/n): " << endl;
         cin >> input;
+        cin.ignore(numeric_limits<streamsize>::max(),'\n');
 
         if (input == YES_UPPER || input == YES_LOWER) {
             Save();
