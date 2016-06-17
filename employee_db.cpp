@@ -149,18 +149,17 @@ void Database::Add()
     cout << "Enter Employee Salary: ";
     cin >> temp.salary;
 
-    Employee *curr = top;
     Employee *emp = new Employee[16];
+    Employee *curr = top;
     int empno = 0;
     while (1) {
         emp[empno] = *curr;
         empno++;
-        if (curr->link != 0) {
-            curr = curr->link;
-        } else {
+        if (curr->link == 0) {
             emp[empno] = temp;
             break;
-        }       
+        }
+        curr = curr->link;
     }
 
     Sort(emp, empno);
@@ -177,17 +176,20 @@ void Database::Delete()
     Employee *curr = top;
     int no = 1;
     while (1) {
-        if (input - 1 == no && curr->link->link != 0) {
-            curr->link = curr->link->link;
+        if (input - 1 == no) {
+            if (curr->link->link == 0) {
+                curr->link = 0;
+            } else {
+                curr->link = curr->link->link;
+            }
+            break;
+        }
+        if (curr->link == 0) {
+            cout << "Employee No Not Found" << endl;
             break;
         }
         no++;
-        if (curr->link != 0) {
-            curr = curr->link;
-        } else {
-            cout << "Employee No Not Found" << endl;
-            break;
-        }       
+        curr = curr->link;
     }
     cout << endl;
 }
@@ -207,12 +209,9 @@ void Database::Search()
             Line(curr, no);
             noResult = false;
         }
+        if (curr->link == 0) break;
         no++;
-        if (curr->link != 0) {
-            curr = curr->link;
-        } else {
-            break;
-        }       
+        curr = curr->link;
     }
     if (noResult) cout << "No Result" << endl;
     cout << endl;
@@ -225,12 +224,9 @@ void Database::List()
     int no = 1;
     while (1) {
         Line(curr, no);
+        if (curr->link == 0) break;
         no++;
-        if (curr->link != 0) {
-            curr = curr->link;
-        } else {
-            break;
-        }
+        curr = curr->link;
     }
     cout << endl;
 }
@@ -247,14 +243,12 @@ int Database::Save()
     Employee *curr = top;
     while (1) {
         OutFile << curr->name << ';' << curr->age << ';' << curr->salary;
-        if (curr->link != 0) {
-            OutFile << endl;
-            curr = curr->link;
-        } else {
-            break;
-        }       
+        if (curr->link == 0) break;
+        OutFile << endl;
+        curr = curr->link;
     }
 
+    cout << endl;
     OutFile.close();
 
     return 0;
@@ -280,8 +274,7 @@ void Database::Exit()
 void Database::Sort(Employee emp[], int count)
 {
     // Bubble Sort
-    int i = count;
-    while (i > 0) {
+    for (int i = count; i > 0; i--) {
         for (int j = 0; j < i; j++) {
             if (strcmp(emp[j].name, emp[j+1].name) > 0)
             {
@@ -290,7 +283,6 @@ void Database::Sort(Employee emp[], int count)
                 emp[j] = temp;
             }
         }
-        i--;
     }
 
     for (int i = 0; i < count; i++) {
