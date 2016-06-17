@@ -170,15 +170,14 @@ void Database::Add()
 
 void Database::Delete()
 {
-    char input;
-    cout << "Enter Employee No or C) ancel: ";
+    uint input;
+    cout << "Enter Employee No: ";
     cin >> input;
-    if (input == 'C' || input == 'c') return;
 
     Employee *curr = top;
     int no = 1;
     while (1) {
-        if (atoi(&input) - 1 == no && curr->link->link != 0) {
+        if (input - 1 == no && curr->link->link != 0) {
             curr->link = curr->link->link;
             break;
         }
@@ -190,6 +189,7 @@ void Database::Delete()
             break;
         }       
     }
+    cout << endl;
 }
 
 void Database::Search()
