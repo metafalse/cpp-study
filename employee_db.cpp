@@ -14,7 +14,6 @@ enum Menu { ADD = 1, DELETE = 2, SEARCH = 3, LIST = 4, SAVE = 5, EXIT = 6 };
 enum YesNo { YES_UPPER = 'Y', YES_LOWER = 'y', NO_UPPER = 'N', NO_LOWER = 'n' };
 
 class Employee {
-    private:
     public:
         Employee();
         char name[20];
@@ -24,7 +23,6 @@ class Employee {
 };
 
 class Database {
-    private:
     public:
         Database();
         void Add();
@@ -33,9 +31,9 @@ class Database {
         void List();
         int Save();
         void Exit();
+        void Sort(Employee[], int count);
         void Header();
         void Line(Employee *, int);
-        void Sort(Employee[], int count);
         
         Employee *top;
 };
@@ -49,20 +47,89 @@ Database::Database()
 {
 }
 
-void Database::Sort(Employee emp[], int count)
+int main(int argc, char *argv[])
 {
-    // Bubble Sort
-    while (count > 0) {
-        for (int i = 0; i < count; i++) {
-            if (strcmp(emp[i].name, emp[i+1].name) > 0)
-            {
-                Employee temp = emp[i+1];
-                emp[i+1] = emp[i];
-                emp[i] = temp;
-            }
-        }
-        count--;
+    if (argc != 2) {
+        cout << "Usage: PR <filename>" << endl;
+        return 1;
     }
+
+    ifstream InFile(argv[1]);
+
+    if (!InFile) {
+        cout << "Cannot open input file.\n";
+        return 1;
+    }
+
+    Employee *emp = new Employee[16];
+    char tmpc;
+    Mode mode = NAME;
+
+    int empno = 0;
+    int pos = 0;
+    while (1) {
+        InFile.get(tmpc);
+        if (InFile.eof()) {
+            break;
+        } else if (mode == NAME) {
+            if (tmpc == ';') {
+                mode = AGE;
+                pos = 0;
+                continue;
+            }
+            emp[empno].name[pos] = tmpc;
+        } else if (mode == AGE) {
+            if (tmpc == ';') {
+                mode = SALARY;
+                pos = 0;
+                continue;
+            }
+            emp[empno].age[pos] = tmpc;
+        } else if (mode == SALARY) {
+            if (tmpc == '\n') {
+                mode = NAME;
+                pos = 0;
+                empno++;
+                continue;
+            }
+            emp[empno].salary[pos] = tmpc;
+        }
+        pos++;
+    }
+
+    InFile.close();
+
+    Database db;
+
+    db.Sort(emp, empno);
+    
+    int input;
+    while (1) {
+        cout << "1. Add Employee" << endl;
+        cout << "2. Delete Employee" << endl;
+        cout << "3. Search Employee" << endl;
+        cout << "4. List All Employees" << endl;
+        cout << "5. Save Employee Database" << endl;
+        cout << "6. Exit Employee Database" << endl;
+        cout << "Enter Your Choice: ";
+        cin >> input;
+        
+        if (input == ADD) {
+            db.Add();
+        } else if (input == DELETE) {
+            db.Delete();
+        } else if (input == SEARCH) {
+            db.Search();
+        } else if (input == LIST) {
+            db.List();
+        } else if (input == SAVE) {
+            db.Save();
+        } else if (input == EXIT) {
+            db.Exit();
+        }
+    }
+
+    return 0;
 }
 
 void Database::Add()
@@ -98,11 +165,6 @@ void Database::Add()
 
     Sort(emp, empno);
 
-    for (int i = 0; i <= empno-1; i++) {
-        emp[i].link = &emp[i+1];
-    }
-    top = &emp[0];
-
     cout << endl;
 }
 
@@ -128,32 +190,6 @@ void Database::Delete()
             break;
         }       
     }
-}
-
-void Database::Header()
-{
-    cout << "# Employee Name          Age         Salary" << endl;
-    cout << "=============================================" << endl;    
-}
-
-void Database::Line(Employee *curr, int no)
-{
-    cout << no << ". ";
-    if (no < 10) {
-        cout << setfill(' ') << setw(22) << left << curr->name;
-    } else {
-        cout << setfill(' ') << setw(21) << left << curr->name;            
-    }
-    cout << setfill(' ') << setw(11) << left << curr->age << ' ';
-    int digits = sizeof(curr->salary);
-    for (int i = sizeof(curr->salary) - 1; !isdigit(curr->salary[i]); i--) {
-        digits--;
-    }
-    for (int i = 0; i < digits; i++) {
-        if (i != 0 && (digits - i) % 3 == 0) cout << ',';
-        cout << curr->salary[i];
-    }
-    cout << endl;
 }
 
 void Database::Search()
@@ -241,94 +277,50 @@ void Database::Exit()
     }
 }
 
-//int main(int argc, char *argv[])
-int main()
+void Database::Sort(Employee emp[], int count)
 {
-    //if (argc != 2) {
-    //    cout << "Usage: PR <filename>\n";
-    //    return 1;
-    //}
-    //ifstream InFile(argv[1]);
-    ifstream InFile("input.txt");
-
-    if (!InFile) {
-        cout << "Cannot open input file.\n";
-        return 1;
-    }
-
-    Employee *emp = new Employee[16];
-    char tmpc;
-    Mode mode = NAME;
-
-    int empno = 0;
-    int pos = 0;
-    while (1) {
-        InFile.get(tmpc);
-        if (InFile.eof()) {
-            break;
-        } else if (mode == NAME) {
-            if (tmpc == ';') {
-                mode = AGE;
-                pos = 0;
-                continue;
+    // Bubble Sort
+    int i = count;
+    while (i > 0) {
+        for (int j = 0; j < i; j++) {
+            if (strcmp(emp[j].name, emp[j+1].name) > 0)
+            {
+                Employee temp = emp[j+1];
+                emp[j+1] = emp[j];
+                emp[j] = temp;
             }
-            emp[empno].name[pos] = tmpc;
-        } else if (mode == AGE) {
-            if (tmpc == ';') {
-                mode = SALARY;
-                pos = 0;
-                continue;
-            }
-            emp[empno].age[pos] = tmpc;
-        } else if (mode == SALARY) {
-            if (tmpc == '\n') {
-                mode = NAME;
-                pos = 0;
-                empno++;
-                continue;
-            }
-            emp[empno].salary[pos] = tmpc;
         }
-        pos++;
+        i--;
     }
 
-    InFile.close();
-
-    Database db;
-
-    db.Sort(emp, empno);
-
-    for (int i = 0; i <= empno-1; i++) {
+    for (int i = 0; i < count; i++) {
         emp[i].link = &emp[i+1];
     }
+    top = &emp[0];
+}
 
-    db.top = &emp[0];
-    
-    int input;
-    while (1) {
-        cout << "1. Add Employee" << endl;
-        cout << "2. Delete Employee" << endl;
-        cout << "3. Search Employee" << endl;
-        cout << "4. List All Employees" << endl;
-        cout << "5. Save Employee Database" << endl;
-        cout << "6. Exit Employee Database" << endl;
-        cout << "Enter Your Choice: ";
-        cin >> input;
-        
-        if (input == ADD) {
-            db.Add();
-        } else if (input == DELETE) {
-            db.Delete();
-        } else if (input == SEARCH) {
-            db.Search();
-        } else if (input == LIST) {
-            db.List();
-        } else if (input == SAVE) {
-            db.Save();
-        } else if (input == EXIT) {
-            db.Exit();
-        }
+void Database::Header()
+{
+    cout << "# Employee Name          Age         Salary" << endl;
+    cout << "=============================================" << endl;    
+}
+
+void Database::Line(Employee *curr, int no)
+{
+    cout << no << ". ";
+    if (no < 10) {
+        cout << setfill(' ') << setw(22) << left << curr->name;
+    } else {
+        cout << setfill(' ') << setw(21) << left << curr->name;            
     }
-
-    return 0;
+    cout << setfill(' ') << setw(11) << left << curr->age << ' ';
+    int digits = sizeof(curr->salary);
+    for (int i = sizeof(curr->salary) - 1; !isdigit(curr->salary[i]); i--) {
+        digits--;
+    }
+    for (int i = 0; i < digits; i++) {
+        if (i != 0 && (digits - i) % 3 == 0) cout << ',';
+        cout << curr->salary[i];
+    }
+    cout << endl;
 }
