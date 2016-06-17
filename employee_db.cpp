@@ -113,6 +113,13 @@ int main(int argc, char *argv[])
         cout << "6. Exit Employee Database" << endl;
         cout << "Enter Your Choice: ";
         cin >> input;
+        if (cin.eof() || !cin.good()) // Check if input is invalid
+        {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(),'\n');
+            cout << "Enter appropriate number." << endl << endl;
+            continue;
+        }
         
         if (input == ADD) {
             db.Add();
@@ -126,6 +133,8 @@ int main(int argc, char *argv[])
             db.Save();
         } else if (input == EXIT) {
             db.Exit();
+        } else {
+            cout << "Enter appropriate number." << endl << endl;
         }
     }
 
