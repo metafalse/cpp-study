@@ -144,22 +144,22 @@ int main(int argc, char *argv[])
 void Database::Add()
 {
     Employee temp;
-    char firstName[11];
+    char firstName[10];
     cout << "Enter Employee First Name: ";
-    cin >> setw(11) >> firstName;
+    cin >> setw(10) >> firstName;
     cin.ignore(numeric_limits<streamsize>::max(),'\n');            
-    char lastName[11];
+    char lastName[10];
     cout << "Enter Employee Last Name: ";
-    cin >> setw(11) >> lastName;
+    cin >> setw(10) >> lastName;
     cin.ignore(numeric_limits<streamsize>::max(),'\n');            
     strcpy(temp.name, strcat(strcat(firstName, " "), lastName));
     char age[3];
     cout << "Enter Employee Age: ";
-    cin >> setw(3) >> temp.age;
+    cin >> setw(3) >> dec >> temp.age;
     cin.ignore(numeric_limits<streamsize>::max(),'\n');            
     char salary[7];
     cout << "Enter Employee Salary: ";
-    cin >> setw(7) >> temp.salary;
+    cin >> setw(7) >> dec >> temp.salary;
     cin.ignore(numeric_limits<streamsize>::max(),'\n');            
 
     Employee *emp = new Employee[16];
