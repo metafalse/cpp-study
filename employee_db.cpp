@@ -24,18 +24,20 @@ class Employee {
 };
 
 class Database {
-    public:
-        Database();
+    private:
+        void Sort(Employee[], int count);
+        void Header();
+        void Line(Employee *, int);
         void Add();
         void Delete();
         void Search();
         void List();
         int Save();
         void Exit();
-        void Sort(Employee[], int count);
-        void Header();
-        void Line(Employee *, int);
-        
+    public:
+        Database();
+        void Load(ifstream *);
+        void Prompt();
         Employee *top;
 };
 
@@ -62,6 +64,15 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    Database db;
+    db.Load(&InFile);
+    db.Prompt();
+
+    return 0;
+}
+
+void Database::Load(ifstream *InFile)
+{
     Employee *emp = new Employee[16];
     char tmpc;
     Mode mode = NAME;
@@ -69,8 +80,8 @@ int main(int argc, char *argv[])
     int empno = 0;
     int pos = 0;
     while (1) {
-        InFile.get(tmpc);
-        if (InFile.eof()) {
+        InFile->get(tmpc);
+        if (InFile->eof()) {
             break;
         } else if (mode == NAME) {
             if (tmpc == ';') {
@@ -98,12 +109,13 @@ int main(int argc, char *argv[])
         pos++;
     }
 
-    InFile.close();
+    InFile->close();
 
-    Database db;
+    Sort(emp, empno);
+}
 
-    db.Sort(emp, empno);
-    
+void Database::Prompt()
+{
     int input;
     while (1) {
         cout << "1. Add Employee" << endl;
@@ -116,30 +128,28 @@ int main(int argc, char *argv[])
         cin >> input;
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(),'\n');
-        if (cin.eof() || !cin.good()) // Check if input is invalid
+        if (cin.eof() || !cin.good()) // Check whether input is invalid
         {
             cout << "Enter appropriate number." << endl << endl;
             continue;
         }
         
         if (input == ADD) {
-            db.Add();
+            Add();
         } else if (input == DELETE) {
-            db.Delete();
+            Delete();
         } else if (input == SEARCH) {
-            db.Search();
+            Search();
         } else if (input == LIST) {
-            db.List();
+            List();
         } else if (input == SAVE) {
-            db.Save();
+            Save();
         } else if (input == EXIT) {
-            db.Exit();
+            Exit();
         } else {
             cout << "Enter appropriate number." << endl << endl;
         }
     }
-
-    return 0;
 }
 
 // Add an employee into the link list
@@ -147,11 +157,11 @@ void Database::Add()
 {
     Employee temp;
     char firstName[10];
-    cout << "Enter Employee First Name: ";
+    cout << "Enter Employee First Name (up to 9 chars): ";
     cin >> setw(10) >> firstName;
     cin.ignore(numeric_limits<streamsize>::max(),'\n');            
     char lastName[10];
-    cout << "Enter Employee Last Name: ";
+    cout << "Enter Employee Last Name (up to 9 chars): ";
     cin >> setw(10) >> lastName;
     cin.ignore(numeric_limits<streamsize>::max(),'\n');            
     strcpy(temp.name, strcat(strcat(firstName, " "), lastName));
