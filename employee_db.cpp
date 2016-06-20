@@ -20,7 +20,7 @@ class Employee {
         char name[21];
         char age[3];
         char salary[6];
-        Employee *link;
+        Employee *link; // Link to next employee node
 };
 
 class Database {
@@ -32,13 +32,13 @@ class Database {
         void Delete();
         void Search();
         void List();
-        int Save();
+        int  Save();
         void Exit();
     public:
         Database();
         void Load(ifstream *);
         void Prompt();
-        Employee *top;
+        Employee *top; // An employee node in front of the link list
 };
 
 Employee::Employee()
@@ -53,7 +53,7 @@ Database::Database()
 int main(int argc, char *argv[])
 {
     if (argc != 2) {
-        cout << "Specify input file." << endl;
+        cout << "Specify input file" << endl;
         return 1;
     }
 
@@ -71,14 +71,17 @@ int main(int argc, char *argv[])
     return 0;
 }
 
+// Load an employee data from an input file into the link list 
 void Database::Load(ifstream *InFile)
 {
+    // Assign characters in the input file into object Employee one by one
+    // If semicolon delimiter is read, next member begins to be read
     Employee *emp = new Employee[16];
     char tmpc;
+    int i = 0;
+    int j = 0;
     Mode mode = NAME;
 
-    int empno = 0;
-    int pos = 0;
     while (1) {
         InFile->get(tmpc);
         if (InFile->eof()) {
@@ -86,34 +89,35 @@ void Database::Load(ifstream *InFile)
         } else if (mode == NAME) {
             if (tmpc == ';') {
                 mode = AGE;
-                pos = 0;
+                j = 0;
                 continue;
             }
-            emp[empno].name[pos] = tmpc;
+            emp[i].name[j] = tmpc;
         } else if (mode == AGE) {
             if (tmpc == ';') {
                 mode = SALARY;
-                pos = 0;
+                j = 0;
                 continue;
             }
-            emp[empno].age[pos] = tmpc;
+            emp[i].age[j] = tmpc;
         } else if (mode == SALARY) {
             if (tmpc == '\n') {
                 mode = NAME;
-                pos = 0;
-                empno++;
+                j = 0;
+                i++;
                 continue;
             }
-            emp[empno].salary[pos] = tmpc;
+            emp[i].salary[j] = tmpc;
         }
-        pos++;
+        j++;
     }
 
     InFile->close();
 
-    Sort(emp, empno);
+    Sort(emp, i);
 }
 
+// Let users choose a function in the menu  
 void Database::Prompt()
 {
     int input;
@@ -130,7 +134,7 @@ void Database::Prompt()
         cin.ignore(numeric_limits<streamsize>::max(),'\n');
         if (cin.eof() || !cin.good()) // Check whether input is invalid
         {
-            cout << "Enter appropriate number." << endl << endl;
+            cout << "Enter appropriate number" << endl << endl;
             continue;
         }
         
@@ -147,7 +151,7 @@ void Database::Prompt()
         } else if (input == EXIT) {
             Exit();
         } else {
-            cout << "Enter appropriate number." << endl << endl;
+            cout << "Enter appropriate number" << endl << endl;
         }
     }
 }
@@ -155,40 +159,46 @@ void Database::Prompt()
 // Add an employee into the link list
 void Database::Add()
 {
+    // Prompt user input
     Employee temp;
     char firstName[10];
-    cout << "Enter Employee First Name (up to 9 chars): ";
+    cout << "Enter new employee's first name (up to 9 chars): ";
     cin >> setw(10) >> firstName;
-    cin.ignore(numeric_limits<streamsize>::max(),'\n');            
-    char lastName[10];
-    cout << "Enter Employee Last Name (up to 9 chars): ";
-    cin >> setw(10) >> lastName;
-    cin.ignore(numeric_limits<streamsize>::max(),'\n');            
-    strcpy(temp.name, strcat(strcat(firstName, " "), lastName));
-    char age[3];
-    cout << "Enter Employee Age: ";
-    cin >> setw(3) >> dec >> temp.age;
-    cin.ignore(numeric_limits<streamsize>::max(),'\n');            
-    char salary[7];
-    cout << "Enter Employee Salary: ";
-    cin >> setw(7) >> dec >> temp.salary;
-    cin.ignore(numeric_limits<streamsize>::max(),'\n');            
+    cin.ignore(numeric_limits<streamsize>::max(),'\n');
 
+    char lastName[10];
+    cout << "Enter new employee's last name (up to 9 chars): ";
+    cin >> setw(10) >> lastName;
+    cin.ignore(numeric_limits<streamsize>::max(),'\n');
+
+    strcpy(temp.name, strcat(strcat(firstName, " "), lastName));
+
+    char age[3];
+    cout << "Enter new employee's age: ";
+    cin >> setw(3) >> dec >> temp.age;
+    cin.ignore(numeric_limits<streamsize>::max(),'\n');
+
+    char salary[7];
+    cout << "Enter new employee's salary: ";
+    cin >> setw(7) >> dec >> temp.salary;
+    cin.ignore(numeric_limits<streamsize>::max(),'\n');
+
+    // Assign employees in the link list and new employee into an array of object once
     Employee *emp = new Employee[16];
     Employee *curr = top;
-    int empno = 0;
+    int i = 0;
     while (1) {
-        emp[empno] = *curr;
-        empno++;
+        emp[i] = *curr;
+        i++;
         if (curr->link == 0) {
-            emp[empno] = temp;
+            emp[i] = temp;
             break;
         }
         curr = curr->link;
     }
 
-    Sort(emp, empno);
-
+    // Sort the array and assign it into the link list
+    Sort(emp, i);
     cout << endl;
 }
 
@@ -196,7 +206,7 @@ void Database::Add()
 void Database::Delete()
 {
     uint input;
-    cout << "Enter Employee No: ";
+    cout << "Enter employee no: ";
     cin >> dec >> input;
     cin.ignore(numeric_limits<streamsize>::max(),'\n');
 
@@ -204,6 +214,7 @@ void Database::Delete()
     int no = 1;
     while (1) {
         if (input - 1 == no) {
+            // Skip the employee node to be deleted
             if (curr->link->link == 0) {
                 curr->link = 0;
             } else {
@@ -212,7 +223,7 @@ void Database::Delete()
             break;
         }
         if (curr->link == 0) {
-            cout << "Employee No Not Found" << endl;
+            cout << "Employee no not found" << endl;
             break;
         }
         no++;
@@ -224,16 +235,11 @@ void Database::Delete()
 // Search employees from the link list
 void Database::Search()
 {
-    char query[11];
+    char query[10];
     while (1) {
-        cout << "Enter Employee First Name or Last Name: ";
+        cout << "Enter employee's' first or last name: ";
         cin >> setw(11) >> query;
         cin.ignore(numeric_limits<streamsize>::max(),'\n');
-        if (cin.eof() || !cin.good()) // Check if input is invalid
-        {
-            cout << "Enter up to 10 charcters." << endl << endl;
-            continue;
-        }
         break;
     }
 
@@ -250,7 +256,7 @@ void Database::Search()
         no++;
         curr = curr->link;
     }
-    if (noResult) cout << "No Result" << endl;
+    if (noResult) cout << "No result" << endl;
     cout << endl;
 }
 
@@ -278,7 +284,7 @@ int Database::Save()
         cout << "Cannot open output file.\n";
         return 1;
     }
-
+    
     Employee *curr = top;
     while (1) {
         OutFile << curr->name << ';' << curr->age << ';' << curr->salary;
@@ -327,6 +333,7 @@ void Database::Sort(Employee emp[], int count)
         }
     }
 
+    // Assign the sorted list into the link list
     for (int i = 0; i < count; i++) {
         emp[i].link = &emp[i+1];
     }
@@ -344,12 +351,16 @@ void Database::Header()
 void Database::Line(Employee *curr, int no)
 {
     cout << no << ". ";
-    if (no < 10) {
+
+    if (no < 10) { // Arrange width
         cout << setfill(' ') << setw(22) << left << curr->name;
     } else {
         cout << setfill(' ') << setw(21) << left << curr->name;            
     }
+
     cout << setfill(' ') << setw(11) << left << curr->age << ' ';
+
+    // Display salary using comma
     int digits = sizeof(curr->salary);
     for (int i = sizeof(curr->salary) - 1; !isdigit(curr->salary[i]); i--) {
         digits--;
