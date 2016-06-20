@@ -13,6 +13,7 @@ enum Mode { NAME, AGE, SALARY };
 enum Menu { ADD = 1, DELETE = 2, SEARCH = 3, LIST = 4, SAVE = 5, EXIT = 6 };
 enum YesNo { YES_UPPER = 'Y', YES_LOWER = 'y', NO_UPPER = 'N', NO_LOWER = 'n' };
 
+// An Employee as a node in the link list
 class Employee {
     public:
         Employee();
@@ -50,14 +51,14 @@ Database::Database()
 int main(int argc, char *argv[])
 {
     if (argc != 2) {
-        cout << "Usage: PR <filename>" << endl;
+        cout << "Specify input file." << endl;
         return 1;
     }
 
     ifstream InFile(argv[1]);
 
     if (!InFile) {
-        cout << "Cannot open input file.\n";
+        cout << "Cannot open input file" << endl;
         return 1;
     }
 
@@ -113,10 +114,10 @@ int main(int argc, char *argv[])
         cout << "6. Exit Employee Database" << endl;
         cout << "Enter Your Choice: ";
         cin >> input;
+        cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(),'\n');
         if (cin.eof() || !cin.good()) // Check if input is invalid
         {
-            cin.clear();
             cout << "Enter appropriate number." << endl << endl;
             continue;
         }
@@ -141,6 +142,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 
+// Add an employee into the link list
 void Database::Add()
 {
     Employee temp;
@@ -180,6 +182,7 @@ void Database::Add()
     cout << endl;
 }
 
+// Delete an employee in the link list
 void Database::Delete()
 {
     uint input;
@@ -208,6 +211,7 @@ void Database::Delete()
     cout << endl;
 }
 
+// Search employees from the link list
 void Database::Search()
 {
     char query[11];
@@ -240,6 +244,7 @@ void Database::Search()
     cout << endl;
 }
 
+// Display all employees from the link list 
 void Database::List()
 {
     Header();
@@ -254,6 +259,7 @@ void Database::List()
     cout << endl;
 }
 
+// Save all employee data into a file
 int Database::Save()
 {
     ofstream OutFile("output.txt");
@@ -277,6 +283,7 @@ int Database::Save()
     return 0;
 }
 
+// Exit from this program
 void Database::Exit()
 {
     char input;
@@ -295,6 +302,7 @@ void Database::Exit()
     }
 }
 
+// Sort employees by their name and assign them into the link list
 void Database::Sort(Employee emp[], int count)
 {
     // Bubble Sort
@@ -315,12 +323,14 @@ void Database::Sort(Employee emp[], int count)
     top = &emp[0];
 }
 
+// Display the header of the employee list
 void Database::Header()
 {
     cout << "# Employee Name          Age         Salary" << endl;
     cout << "=============================================" << endl;    
 }
 
+// Display each line of the employee list
 void Database::Line(Employee *curr, int no)
 {
     cout << no << ". ";
