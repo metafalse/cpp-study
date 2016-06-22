@@ -10,6 +10,7 @@
 using namespace std;
 
 #define CAPACITY 16 // Max count of employees
+#define OUTPUT_FILE "output.txt"
 
 // An Employee as a node in the link list
 class Employee {
@@ -172,6 +173,7 @@ void Database::Add()
 
     // Prompt user input
     Employee temp;
+
     string firstName;
     cout << "Enter new employee's first name: ";
     while (1) {
@@ -267,12 +269,20 @@ void Database::Delete()
     cin >> dec >> input;
     cin.ignore(numeric_limits<streamsize>::max(),'\n');
 
+    // If an employee at the top of list is deleted
+    if (input == 1) {
+        Line(top, 1);
+        cout << "Deleted this employee" << endl;
+        top = top->link;
+        cout << endl;
+    }
     Employee *curr = top;
     int no = 1;
     while (1) {
         if (input - 1 == no) {
-            // Skip the employee node to be deleted
-            if (curr->link->link == 0) {
+            Line(curr->link, no + 1);
+            cout << "Deleted this employee" << endl;
+            if (curr->link->link == 0) { // If an employee at the end of list is deleted
                 curr->link = 0;
             } else {
                 curr->link = curr->link->link;
@@ -309,7 +319,7 @@ void Database::Search()
     int no = 1;
     bool noResult = true;
     while (1) {
-        if (strstr(curr->name, query.c_str())) {
+        if (strcasestr(curr->name, query.c_str())) {
             Line(curr, no);
             noResult = false;
         }
@@ -339,7 +349,7 @@ void Database::List()
 // Save all employee data into a file
 int Database::Save()
 {
-    ofstream OutFile("output.txt");
+    ofstream OutFile(OUTPUT_FILE);
 
     if (!OutFile) {
         cout << "Cannot open output file.\n";
@@ -354,7 +364,7 @@ int Database::Save()
         curr = curr->link;
     }
 
-    cout << endl;
+    cout << "Saved into " << OUTPUT_FILE << endl << endl;
     OutFile.close();
 
     return 0;
