@@ -141,7 +141,7 @@ void Database::Prompt()
         cin.ignore(numeric_limits<streamsize>::max(),'\n');
         if (cin.eof() || !cin.good()) // Check whether input is invalid
         {
-            cout << "Enter appropriate number" << endl << endl;
+            cout << "Enter appropriate number: ";
             continue;
         }
 
@@ -159,7 +159,7 @@ void Database::Prompt()
         } else if (input == EXIT) {
             Exit();
         } else {
-            cout << "Enter appropriate number" << endl << endl;
+            cout << "Enter appropriate number: ";
         }
     }
 }
@@ -179,7 +179,13 @@ void Database::Add()
     cout << "Enter new employee's first name: ";
     while (1) {
         cin >> firstName;
+        cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(),'\n');
+        if (cin.eof() || !cin.good()) // Check whether input is invalid
+        {
+            cout << "Enter appropriate string: ";
+            continue;
+        }
         if (strlen(firstName.c_str()) > 9) {
             cout << "Enter up to 9 chars: ";
             continue;
@@ -191,7 +197,13 @@ void Database::Add()
     cout << "Enter new employee's last name: ";
     while (1) {
         cin >> lastName;
+        cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(),'\n');
+        if (cin.eof() || !cin.good()) // Check whether input is invalid
+        {
+            cout << "Enter appropriate string: ";
+            continue;
+        }
         if (strlen(lastName.c_str()) > 9) {
             cout << "Enter up to 9 chars: ";
             continue;
@@ -206,7 +218,13 @@ void Database::Add()
     cout << "Enter new employee's age: ";
     while (1) {
         cin >> age;
+        cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(),'\n');
+        if (cin.eof() || !cin.good()) // Check whether input is invalid
+        {
+            cout << "Enter appropriate number: ";
+            continue;
+        }
         if (strlen(age.c_str()) > 2) {
             cout << "Enter up to 99: ";
             continue;
@@ -226,7 +244,13 @@ void Database::Add()
     cout << "Enter new employee's salary: ";
     while (1) {
         cin >> salary;
+        cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(),'\n');
+        if (cin.eof() || !cin.good()) // Check whether input is invalid
+        {
+            cout << "Enter appropriate number: ";
+            continue;
+        }
         if (strlen(salary.c_str()) > 6) {
             cout << "Enter up to 999,999: ";
             continue;
@@ -268,7 +292,13 @@ void Database::Delete()
     char input[3];
     cout << "Enter employee no: ";
     cin >> input;
+    cin.clear();
     cin.ignore(numeric_limits<streamsize>::max(),'\n');
+    if (cin.eof() || !cin.good()) // Check whether input is invalid
+    {
+        cout << "Employee no not found" << endl << endl;
+        return;
+    }
 
     // If input is not appropriate employee no
     for (int i = 0; i < strlen(input); i++) {
@@ -321,7 +351,13 @@ void Database::Search()
     string query;
     while (1) {
         cin >> query;
+        cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(),'\n');
+        if (cin.eof() || !cin.good()) // Check whether input is invalid
+        {
+            cout << "Enter appropriate string: ";
+            continue;
+        }
         if (strlen(query.c_str()) > 9) {
             cout << "Enter up to 9 chars: ";
             continue;
@@ -390,15 +426,21 @@ void Database::Exit()
 {
     char input;
     while (1) {
-        cout << "Do you want to save into a file? (y/n): " << endl;
+        cout << "Do you want to save into a file? (y/n): ";
         cin >> input;
+        cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(),'\n');
+        if (cin.eof() || !cin.good()) // Check whether input is invalid
+        {
+            cout << "Enter appropriate character" << endl;
+            continue;
+        }
 
         enum YesNo { YES_UPPER = 'Y', YES_LOWER = 'y', NO_UPPER = 'N', NO_LOWER = 'n' };
         if (input == YES_UPPER || input == YES_LOWER) {
             Save();
         } else if (input != NO_UPPER && input != NO_LOWER) {
-            cout << "Please enter the appropriate character" << endl;
+            cout << "Enter appropriate character" << endl;
             continue;
         }
         exit(0);
