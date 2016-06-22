@@ -372,7 +372,7 @@ void Database::Sort(Employee emp[], int count)
     // Bubble Sort
     for (int i = count; i > 0; i--) {
         for (int j = 0; j < i; j++) {
-            if (strcmp(emp[j].name, emp[j+1].name) > 0)
+            if (strcasecmp(emp[j].name, emp[j+1].name) > 0)
             {
                 Employee temp = emp[j+1];
                 emp[j+1] = emp[j];
