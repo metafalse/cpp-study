@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <fstream>
 #include <typeinfo>
+#include <cstdlib>
 
 using namespace std;
 
@@ -24,7 +25,7 @@ class Employee {
 
 class Database {
     private:
-        void Sort(Employee[], int count);
+        void Sort(Employee[], int);
         void Header();
         void Line(Employee *, int);
         void Add();
@@ -33,7 +34,7 @@ class Database {
         void List();
         int  Save();
         void Exit();
-        int  count;
+        uint empCount; // Number of employees
     public:
         Database();
         void Load(ifstream *);
@@ -120,7 +121,7 @@ void Database::Load(ifstream *InFile)
 
     InFile->close();
     Sort(emp, i);
-    count = i + 1;
+    empCount = i + 1;
 }
 
 // Let users choose a function in the menu  
@@ -166,7 +167,7 @@ void Database::Prompt()
 // Add an employee into the link list
 void Database::Add()
 {
-    if (count >= CAPACITY) {
+    if (empCount >= CAPACITY) {
         cout << "There are any space to add an employee" << endl << endl;
         return;
     }
@@ -198,8 +199,8 @@ void Database::Add()
         break;
     }
 
-    string test = firstName + " " + lastName;
-    strcpy(temp.name, test.c_str());
+    string fullName = firstName + " " + lastName;
+    strcpy(temp.name, fullName.c_str());
 
     string age;
     cout << "Enter new employee's age: ";
@@ -258,28 +259,44 @@ void Database::Add()
     // Sort the array and assign it into the link list
     Sort(emp, i);
     cout << endl;
-    count++;
+    empCount++;
 }
 
 // Delete an employee in the link list
 void Database::Delete()
 {
-    uint input;
+    char input[3];
     cout << "Enter employee no: ";
-    cin >> dec >> input;
+    cin >> input;
     cin.ignore(numeric_limits<streamsize>::max(),'\n');
 
+    // If input is not appropriate employee no
+    for (int i = 0; i < strlen(input); i++) {
+        if (!isdigit(input[i])) {
+            cout << "Employee no not found" << endl << endl;
+            return;
+        }
+    }
+    int inputInt = atoi(input);
+    if (inputInt > empCount || inputInt < 1) {
+        cout << "Employee no not found" << endl << endl;
+        return;
+    }
+    
     // If an employee at the top of list is deleted
-    if (input == 1) {
+    if (inputInt == 1) {
+        Header();
         Line(top, 1);
-        cout << "Deleted this employee" << endl;
+        cout << "Deleted this employee" << endl << endl;
         top = top->link;
-        cout << endl;
+        empCount--;
+        return;
     }
     Employee *curr = top;
     int no = 1;
     while (1) {
-        if (input - 1 == no) {
+        if (inputInt - 1 == no) {
+            Header();
             Line(curr->link, no + 1);
             cout << "Deleted this employee" << endl;
             if (curr->link->link == 0) { // If an employee at the end of list is deleted
@@ -289,13 +306,10 @@ void Database::Delete()
             }
             break;
         }
-        if (curr->link == 0) {
-            cout << "Employee no not found" << endl;
-            break;
-        }
         no++;
         curr = curr->link;
     }
+    empCount--;
     cout << endl;
 }
 
