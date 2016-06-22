@@ -316,6 +316,7 @@ void Database::Delete()
 // Search employees from the link list
 void Database::Search()
 {
+    // Prompt user input
     cout << "Enter employee's' first or last name: ";
     string query;
     while (1) {
