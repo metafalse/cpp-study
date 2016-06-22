@@ -9,10 +9,6 @@
 
 using namespace std;
 
-enum Mode { NAME, AGE, SALARY };
-enum Menu { ADD = 1, DELETE = 2, SEARCH = 3, LIST = 4, SAVE = 5, EXIT = 6 };
-enum YesNo { YES_UPPER = 'Y', YES_LOWER = 'y', NO_UPPER = 'N', NO_LOWER = 'n' };
-
 // An Employee as a node in the link list
 class Employee {
     public:
@@ -80,6 +76,7 @@ void Database::Load(ifstream *InFile)
     char tmpc;
     int i = 0;
     int j = 0;
+    enum Mode { NAME, AGE, SALARY };
     Mode mode = NAME;
 
     while (1) {
@@ -137,7 +134,8 @@ void Database::Prompt()
             cout << "Enter appropriate number" << endl << endl;
             continue;
         }
-        
+
+        enum Menu { ADD = 1, DELETE = 2, SEARCH = 3, LIST = 4, SAVE = 5, EXIT = 6 };
         if (input == ADD) {
             Add();
         } else if (input == DELETE) {
@@ -161,27 +159,72 @@ void Database::Add()
 {
     // Prompt user input
     Employee temp;
-    char firstName[10];
-    cout << "Enter new employee's first name (up to 9 chars): ";
-    cin >> setw(10) >> firstName;
-    cin.ignore(numeric_limits<streamsize>::max(),'\n');
+    string firstName;
+    cout << "Enter new employee's first name: ";
+    while (1) {
+        cin >> firstName;
+        cin.ignore(numeric_limits<streamsize>::max(),'\n');
+        if (strlen(firstName.c_str()) > 9) {
+            cout << "Enter up to 9 chars: ";
+            continue;
+        }
+        break;
+    }
 
-    char lastName[10];
-    cout << "Enter new employee's last name (up to 9 chars): ";
-    cin >> setw(10) >> lastName;
-    cin.ignore(numeric_limits<streamsize>::max(),'\n');
+    string lastName;
+    cout << "Enter new employee's last name: ";
+    while (1) {
+        cin >> lastName;
+        cin.ignore(numeric_limits<streamsize>::max(),'\n');
+        if (strlen(lastName.c_str()) > 9) {
+            cout << "Enter up to 9 chars: ";
+            continue;
+        }
+        break;
+    }
 
-    strcpy(temp.name, strcat(strcat(firstName, " "), lastName));
+    string test = firstName + " " + lastName;
+    strcpy(temp.name, test.c_str());
 
-    char age[3];
+    string age;
     cout << "Enter new employee's age: ";
-    cin >> setw(3) >> dec >> temp.age;
-    cin.ignore(numeric_limits<streamsize>::max(),'\n');
+    while (1) {
+        cin >> age;
+        cin.ignore(numeric_limits<streamsize>::max(),'\n');
+        if (strlen(age.c_str()) > 2) {
+            cout << "Enter up to 99: ";
+            continue;
+        }
+        bool isDigit = true;
+        for (int i = 0; i < strlen(age.c_str()); i++) {
+            if (!isdigit(age[i])) isDigit = false;
+        }
+        if (isDigit == true) {
+            strcpy(temp.age, age.c_str());
+            break;
+        }
+        cout << "Enter digit: ";
+    }
 
-    char salary[7];
+    string salary;
     cout << "Enter new employee's salary: ";
-    cin >> setw(7) >> dec >> temp.salary;
-    cin.ignore(numeric_limits<streamsize>::max(),'\n');
+    while (1) {
+        cin >> salary;
+        cin.ignore(numeric_limits<streamsize>::max(),'\n');
+        if (strlen(salary.c_str()) > 6) {
+            cout << "Enter up to 999,999: ";
+            continue;
+        }
+        bool isDigit = true;
+        for (int i = 0; i < strlen(salary.c_str()); i++) {
+            if (!isdigit(salary[i])) isDigit = false;
+        }
+        if (isDigit == true) {
+            strcpy(temp.salary, salary.c_str());
+            break;
+        }
+        cout << "Enter digit: ";
+    }
 
     // Assign employees in the link list and new employee into an array of object once
     Employee *emp = new Employee[16];
@@ -235,11 +278,15 @@ void Database::Delete()
 // Search employees from the link list
 void Database::Search()
 {
-    char query[10];
+    cout << "Enter employee's' first or last name: ";
+    string query;
     while (1) {
-        cout << "Enter employee's' first or last name: ";
-        cin >> setw(11) >> query;
+        cin >> query;
         cin.ignore(numeric_limits<streamsize>::max(),'\n');
+        if (strlen(query.c_str()) > 9) {
+            cout << "Enter up to 9 chars: ";
+            continue;
+        }
         break;
     }
 
@@ -248,7 +295,7 @@ void Database::Search()
     int no = 1;
     bool noResult = true;
     while (1) {
-        if (strstr(curr->name, query)) {
+        if (strstr(curr->name, query.c_str())) {
             Line(curr, no);
             noResult = false;
         }
@@ -308,6 +355,7 @@ void Database::Exit()
         cin >> input;
         cin.ignore(numeric_limits<streamsize>::max(),'\n');
 
+        enum YesNo { YES_UPPER = 'Y', YES_LOWER = 'y', NO_UPPER = 'N', NO_LOWER = 'n' };
         if (input == YES_UPPER || input == YES_LOWER) {
             Save();
         } else if (input != NO_UPPER && input != NO_LOWER) {
