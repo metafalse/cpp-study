@@ -9,6 +9,8 @@
 
 using namespace std;
 
+#define CAPACITY 16 // Max count of employees
+
 // An Employee as a node in the link list
 class Employee {
     public:
@@ -30,6 +32,7 @@ class Database {
         void List();
         int  Save();
         void Exit();
+        int  count;
     public:
         Database();
         void Load(ifstream *);
@@ -72,7 +75,7 @@ void Database::Load(ifstream *InFile)
 {
     // Assign characters in the input file into object Employee one by one
     // If semicolon delimiter is read, next member begins to be read
-    Employee *emp = new Employee[16];
+    Employee *emp = new Employee[CAPACITY];
     char tmpc;
     int i = 0;
     int j = 0;
@@ -80,6 +83,11 @@ void Database::Load(ifstream *InFile)
     Mode mode = NAME;
 
     while (1) {
+        if (i >= CAPACITY) {
+            cout << "Number of employees in input file is larger than the capacity" << endl << endl;
+            exit(0);
+        }
+
         InFile->get(tmpc);
         if (InFile->eof()) {
             break;
@@ -110,8 +118,8 @@ void Database::Load(ifstream *InFile)
     }
 
     InFile->close();
-
     Sort(emp, i);
+    count = i + 1;
 }
 
 // Let users choose a function in the menu  
@@ -157,6 +165,11 @@ void Database::Prompt()
 // Add an employee into the link list
 void Database::Add()
 {
+    if (count >= CAPACITY) {
+        cout << "There are any space to add an employee" << endl << endl;
+        return;
+    }
+
     // Prompt user input
     Employee temp;
     string firstName;
@@ -227,7 +240,7 @@ void Database::Add()
     }
 
     // Assign employees in the link list and new employee into an array of object once
-    Employee *emp = new Employee[16];
+    Employee *emp = new Employee[CAPACITY];
     Employee *curr = top;
     int i = 0;
     while (1) {
@@ -243,6 +256,7 @@ void Database::Add()
     // Sort the array and assign it into the link list
     Sort(emp, i);
     cout << endl;
+    count++;
 }
 
 // Delete an employee in the link list
