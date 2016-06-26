@@ -3,6 +3,7 @@
 /* os: Mac OS X 10.10.5 */
 
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 
 using namespace std;
@@ -48,6 +49,14 @@ class Balloon : public Airship {
         void SetPowerSourceType(uint);
         char *GetLength();
         void SetLength(char, int);
+};
+
+class Program {
+    public:
+        Program();
+        Airship *as[10];
+        void Load(ifstream *);
+        void Report();
 };
 
 char *Airplane::GetName()
@@ -128,12 +137,6 @@ void Balloon::SetLength(char c, int pos)
     maxAltitude[pos] = c;
 }
 
-class Program {
-    public:
-        Program();
-        void Load(ifstream *);
-};
-
 Program::Program()
 {
 }
@@ -156,6 +159,7 @@ int main()
 
     Program pg;
     pg.Load(&InFile);
+    pg.Report();
 
     return 0;
 }
@@ -163,7 +167,7 @@ int main()
 void Program::Load(ifstream *InFile)
 {
     //Airship *as = new airship[10];
-    Airship *as[10];
+    //Airship *as[10];
     char tmpc;
     int i = 0;
     int j = 0;
@@ -228,12 +232,42 @@ void Program::Load(ifstream *InFile)
             j++;
         }
     }
+}
+
+void Program::Report()
+{
+    cout << "Listing of all Airplanes" << endl;
+    cout << "Name                Engine Type     Maximum Range" << endl;
+    cout << "------------------------------------------------" << endl;
+    string engineType;
     for (int i = 0; i < 10; i++) {
-        cout << as[i]->airshipType << '|';
-        cout << as[i]->GetName() << '|';
-        cout << as[i]->maxPassengerCount << '|';
-        cout << as[i]->maxCargoWeight << '|';
-        cout << as[i]->GetPowerSourceType() << '|';
-        cout << as[i]->GetLength() << endl;
+        if (as[i]->airshipType != 0) continue;
+        cout << setfill(' ') << setw(20) << left << as[i]->GetName();
+        if (as[i]->GetPowerSourceType() == 0) {
+            engineType = "Jet";
+        } else if (as[i]->GetPowerSourceType() == 1) {
+            engineType = "Propeller";
+        }
+        cout << setfill(' ') << setw(16) << left << engineType;
+        cout << setfill(' ') << setw(12) << left << as[i]->GetLength();
+        cout << endl;
+    }
+    cout << endl;
+
+    cout << "Listing of all Balloons" << endl;
+    cout << "Name                Gas Type        Maximum Altitude" << endl;
+    cout << "----------------------------------------------------" << endl;
+    string gasType;
+    for (int i = 0; i < 10; i++) {
+        if (as[i]->airshipType != 1) continue;
+        cout << setfill(' ') << setw(20) << left << as[i]->GetName();
+        if (as[i]->GetPowerSourceType() == 0) {
+            gasType = "Helium";
+        } else if (as[i]->GetPowerSourceType() == 1) {
+            gasType = "Hydrogen";
+        }
+        cout << setfill(' ') << setw(16) << left << gasType;
+        cout << setfill(' ') << setw(12) << left << as[i]->GetLength();
+        cout << endl;
     }
 }
