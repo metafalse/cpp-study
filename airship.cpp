@@ -141,16 +141,14 @@ Program::Program()
 {
 }
 
-//int main(int argc, char *argv[])
-int main()
+int main(int argc, char *argv[])
 {
-    /*if (argc != 2) {
+    if (argc != 2) {
         cout << "Specify input file" << endl;
         return 1;
     }
 
-    ifstream InFile(argv[1]);*/
-    ifstream InFile("airship.dat");
+    ifstream InFile(argv[1]);
 
     if (!InFile) {
         cout << "Cannot open input file" << endl;
@@ -166,8 +164,6 @@ int main()
 
 void Program::Load(ifstream *InFile)
 {
-    //Airship *as = new airship[10];
-    //Airship *as[10];
     char tmpc;
     int i = 0;
     int j = 0;
