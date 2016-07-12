@@ -15,6 +15,7 @@ enum GasType { HELIUM = 0, HYDROGEN = 1 };
 // A general base class
 class Airship {
     public:
+        Airship();
         virtual ~Airship();
         AirShipType airshipType;
         char maxPassengerCount[4];
@@ -29,6 +30,7 @@ class Airship {
 
 class Airplane : public Airship {
     public:
+        Airplane();
         ~Airplane();
         char airplaneName[20];
         EngineType engineType;
@@ -45,6 +47,7 @@ class Airplane : public Airship {
 
 class Balloon : public Airship {
     public:
+        Balloon();
         ~Balloon();
         char balloonName[20];
         GasType gasType;
@@ -67,12 +70,30 @@ class Program {
         void Report();
 };
 
+Airship::Airship()
+{
+    memset(maxPassengerCount, '\0', 4);
+    memset(maxCargoWeight, '\0', 7);
+}
+
 Airship::~Airship()
 {
 }
 
+Airplane::Airplane()
+{
+    memset(airplaneName, '\0', 20);
+    memset(maxRange, '\0', 7);
+}
+
 Airplane::~Airplane()
 {
+}
+
+Balloon::Balloon()
+{
+    memset(balloonName, '\0', 20);
+    memset(maxAltitude, '\0', 7);
 }
 
 Balloon::~Balloon()
